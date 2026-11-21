@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Launch Radar: pre-token protocols ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="mast-top">
+    <div>
+      <h1><span class="pulse" aria-hidden="true"></span>Token Launch Radar</h1>
+      <p class="tagline">Protocols that record no token yet, ranked by what their launch could be worth.</p>
+    </div>
+    <div class="snapshot-meta" id="snapshotMeta"></div>
+  </div>
+  <div class="stats" id="stats"></div>
+</header>
+
+<main>
+  <section class="controls" aria-label="Board controls">
+    <label class="ctl grow">Search
+      <input id="q" type="search" placeholder="Protocol name, category or chain" autocomplete="off">
+    </label>
+    <label class="ctl">Category
+      <select id="cat"><option value="">All categories</option></select>
+    </label>
+    <label class="ctl">Chain
+      <select id="chain"><option value="">All chains</option></select>
+    </label>
+    <label class="ctl check">
+      <input id="wlOnly" type="checkbox">
+      <span>Watchlist only</span>
+    </label>
+    <div class="ctl count" id="rowCount" role="status"></div>
+  </section>
+
+  <section id="detail" class="detail" hidden></section>
+
+  <section class="board-wrap">
+    <table class="board" id="board">
+      <thead>
+        <tr>
+          <th data-key="rank" class="num sortable">Rank</th>
+          <th data-key="name" class="sortable">Protocol</th>
+          <th>Category</th>
+          <th>Chains</th>
+          <th data-key="tvl" class="num sortable">TVL</th>
+          <th data-key="change" class="num sortable">7d change</th>
+          <th data-key="age" class="num sortable">Age</th>
+          <th data-key="implied" class="num sortable">Implied value</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <p class="empty" id="empty" hidden>No protocols match the current filters.</p>
+  </section>
+
+  <section class="method" id="method"></section>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
