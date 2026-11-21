@@ -1,3 +1,8 @@
+// Token Launch Radar — this entry's pipeline in one breath: the sealed DefiLlama snapshot goes
+// in, lib/model.ts scores every pre-token protocol with category market-cap/TVL multiples
+// shrunk toward the global median, and out comes the ranked board, the static offline
+// dashboard and the judge's dossier. This file is only the plumbing around that model.
+//
 // A working token-radar-01 entry (Node 22, standard library only).
 //
 // The program reads the sealed snapshot from /input/snapshot.json (or --input <file|dir>), scores every
@@ -50,6 +55,17 @@ if (issue !== null) {
   process.exit(1);
 }
 
+// A second, independent guard before anything is written: recount the watchlist coverage
+// and the rank run straight off the board, and throw rather than exit quietly on a miss.
+const boardSlugs = new Set(board.map((row) => row.slug));
+const covered = snapshot.watchlist.filter((slug) => boardSlugs.has(slug)).length;
+if (covered !== snapshot.watchlist.length) {
+  throw new Error(`token radar: board covers ${covered} of ${snapshot.watchlist.length} watchlist protocols`);
+}
+if (!board.every((row, at) => row.rank === at + 1)) {
+  throw new Error('token radar: board ranks are not exactly 1..N');
+}
+
 mkdirSync(out, { recursive: true });
 writeFileSync(join(out, 'board.json'), `${JSON.stringify({ rows: board })}\n`);
 writeFileSync(join(out, 'data.js'), dataScript(radar));
@@ -89,3 +105,5 @@ process.stdout.write(
   `token radar: ${snapshot.protocols.length} protocols, ${snapshot.watchlist.length} on the watchlist, ${board.length} rows scored (${radar.early_size} early, ${radar.live_size} live set aside)\n` +
     `token radar: wrote ${join(out, 'board.json')}, ${join(out, 'data.js')}, ${join(out, 'dashboard')} (3 files), ${join(out, 'screenshots')} (${shots.length} images) and ${join(out, 'dossier.json')}\n`,
 );
+
+console.log(`token radar: board ${board.length} rows, watchlist ${covered}/${snapshot.watchlist.length}, top ${board[0]!.slug} at $${board[0]!.implied_value_usd.toLocaleString('en-US')}`);
